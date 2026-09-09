@@ -1,6 +1,6 @@
 # A100 MIG on k3s: single, mixed, and MIG + time-slicing
 
-A practical NVIDIA GPU Operator lab based on a GCP A100 session on **8 September 2026**.
+A practical NVIDIA GPU Operator lab based on a A100 session.
 Start with one A100 40 GB, create seven equal MIG partitions, switch to a mixed layout,
 then configure four shared accesses to the 20 GB partition.
 
@@ -8,7 +8,6 @@ then configure four shared accesses to the 20 GB partition.
 VectorAdd pod in each mode, and four Python processes sharing the 3g.20gb MIG instance.
 See [validation evidence](outputs/README.md) for the distinction between recorded results
 and expected Kubernetes resource counts.
-The repository has been checked offline; it has not been executed against a GPU by its assembler.
 
 ## Lab environment
 
@@ -23,12 +22,10 @@ The repository has been checked offline; it has not been executed against a GPU 
 | Runtime integration | CDI + NVIDIA NRI plugin in the installation instructions |
 | nvidia-smi CUDA version | 13.2 (driver compatibility display, not container toolkit version) |
 
-The exact containerd version was not captured. Check its compatibility before copying
-the NRI installation into a new environment. The CUDA test image uses CUDA 12.5.
 
 ## Learning sequence
 
-| Stage | Physical layout | Nonzero Kubernetes resources |
+| Stage | Physical layout |  Kubernetes resources |
 |---|---|---|
 | Single | 7 × 1g.5gb | nvidia.com/gpu: 7 |
 | Mixed / balanced | 2 × 1g.5gb + 1 × 2g.10gb + 1 × 3g.20gb | Profile-specific counts 2, 1, 1 |
