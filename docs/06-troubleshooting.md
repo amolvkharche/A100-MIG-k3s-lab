@@ -26,9 +26,7 @@ kubectl exec -n gpu-operator ds/nvidia-driver-daemonset \
   nvidia-smi --query-gpu=name,mig.mode.current,mig.mode.pending --format=csv
 ```
 
-In the session the boot time was 11:39:24 and the request was 11:51:52; the VM had not
-rebooted when the logs were collected. With current Disabled / pending Enabled and a
-reboot still outstanding, the successful recovery was:
+With current Disabled / pending Enabled and a reboot still outstanding, the successful recovery was:
 
 ```bash
 reboot
