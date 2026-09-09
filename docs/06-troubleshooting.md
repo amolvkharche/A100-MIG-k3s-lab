@@ -31,7 +31,7 @@ rebooted when the logs were collected. With current Disabled / pending Enabled a
 reboot still outstanding, the successful recovery was:
 
 ```bash
-systemctl reboot
+reboot
 ```
 
 This interrupts the single-node control plane and SSH. Reconnect, restore your environment
