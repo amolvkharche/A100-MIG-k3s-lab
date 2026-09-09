@@ -84,26 +84,6 @@ a DaemonSet selector, which can choose an arbitrary pod on a multi-node cluster;
 the driver pod on your target node in that case. MIG strategy is an operator-wide setting;
 MIG layout and device-plugin config labels select per-node behavior.
 
-
-## Add this to GitHub
-
-To add the files to an existing repository, copy this folder into that checkout, then
-review and commit the added files. Do not overwrite an existing README unintentionally.
-For a new repository, create an empty remote repository and run:
-
-```bash
-git init
-git add .
-git commit -m "Add A100 MIG and time-slicing lab"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
-git push -u origin main
-```
-
-Review outputs before publishing; node/GPU/MIG identifiers in selected sample outputs are
-normalized. No kubeconfig, credentials, access tokens, or git remote configuration is included.
-No license is imposed by this sample; choose one before offering your own repository for reuse.
-
 ## References
 
 See [official references and technical notes](docs/references.md).
