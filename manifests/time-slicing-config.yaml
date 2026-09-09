@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mig-time-slicing
+  namespace: gpu-operator
+data:
+  dedicated: |-
+    version: v1
+    flags:
+      migStrategy: mixed
+  share-3g: |-
+    version: v1
+    flags:
+      migStrategy: mixed
+    sharing:
+      timeSlicing:
+        renameByDefault: true
+        failRequestsGreaterThanOne: true
+        resources:
+          - name: nvidia.com/mig-3g.20gb
+            replicas: 4

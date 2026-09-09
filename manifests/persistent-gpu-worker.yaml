@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mig-persistent-worker
+  namespace: default
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: mig-persistent-worker
+  template:
+    metadata:
+      labels:
+        app: mig-persistent-worker
+    spec:
+      containers:
+        - name: gpu-worker
+          image: pytorch/pytorch:2.6.0-cuda12.4-cudnn9-runtime
+          command: ["python", "-u", "/app/worker.py"]
+          env:
+            - name: MATRIX_SIZE
+              value: "4096"
+            - name: HOLD_MIB
+              value: "0"
+            - name: PAUSE_SECONDS
+              value: "0.02"
+          volumeMounts:
+            - name: code
+              mountPath: /app
+              readOnly: true
+          resources:
+            requests:
+              cpu: "250m"
+              memory: 1Gi
+            limits:
+              cpu: "1"
+              memory: 2Gi
+              nvidia.com/mig-3g.20gb.shared: 1
+      volumes:
+        - name: code
+          configMap:
+            name: mig-worker-code

@@ -1,0 +1,17 @@
+# Base values for the documented Ubuntu/k3s lab.
+# Requires supported containerd with CDI and NRI enabled.
+driver:
+  enabled: true
+  kernelModuleType: auto
+toolkit:
+  enabled: true
+cdi:
+  enabled: true
+  nriPluginEnabled: true
+mig:
+  strategy: single
+migManager:
+  enabled: true
+  env:
+    - name: WITH_REBOOT
+      value: "true"

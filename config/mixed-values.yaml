@@ -1,0 +1,3 @@
+# Overlay on gpu-operator-values.yaml; does not select a partition layout.
+mig:
+  strategy: mixed

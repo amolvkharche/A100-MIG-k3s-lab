@@ -1,0 +1,6 @@
+# Recorded output; UUIDs replaced with placeholders for portability.
+GPU 0: NVIDIA A100-SXM4-40GB (UUID: GPU-EXAMPLE)
+  MIG 3g.20gb     Device  0: (UUID: MIG-EXAMPLE-3G)
+  MIG 2g.10gb     Device  1: (UUID: MIG-EXAMPLE-2G)
+  MIG 1g.5gb      Device  2: (UUID: MIG-EXAMPLE-1G-A)
+  MIG 1g.5gb      Device  3: (UUID: MIG-EXAMPLE-1G-B)

@@ -1,0 +1,5 @@
+# Apply after the mixed overlay. Select share-3g on the target node.
+devicePlugin:
+  config:
+    name: mig-time-slicing
+    default: dedicated
