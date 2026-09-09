@@ -46,11 +46,16 @@ kubectl get clusterpolicy cluster-policy \
 Expected strategy: mixed.
 
 ```bash
-kubectl label node "$GPU_NODE" nvidia.com/mig.config=all-balanced --overwrite
+$ kubectl label node "$GPU_NODE" nvidia.com/mig.config=all-balanced --overwrite
+node/instance-20260908-112739 labeled
 
-kubectl get node "$GPU_NODE" \
+$ kubectl get node "$GPU_NODE" \
   -L nvidia.com/mig.strategy,nvidia.com/mig.config,nvidia.com/mig.config.state \
   --watch
+
+NAME                       STATUS   ROLES           AGE   VERSION        MIG.STRATEGY   MIG.CONFIG     MIG.CONFIG.STATE
+instance-20260908-112739   Ready    control-plane   51m   v1.36.4+k3s1   mixed          all-balanced   success
+
 ```
 
 Wait for success. Changing geometry while MIG mode is already enabled normally does not
@@ -59,12 +64,24 @@ require repeating the initial mode-enable reboot. Let MIG Manager handle the cha
 ## Wait for resource registration too
 
 ```bash
-kubectl exec -n gpu-operator ds/nvidia-driver-daemonset \
+$ kubectl exec -n gpu-operator ds/nvidia-driver-daemonset \
   -c nvidia-driver-ctr -- nvidia-smi -L
 
-kubectl get node "$GPU_NODE" \
+GPU 0: NVIDIA A100-SXM4-40GB (UUID: GPU-838f60d9-651f-9166-ea42-f9da674a6947)
+  MIG 3g.20gb     Device  0: (UUID: MIG-08750fc0-0120-5bc2-b5a5-21a7a364faea)
+  MIG 2g.10gb     Device  1: (UUID: MIG-529ac0cf-2ce7-51f1-bfd1-ca4dff70463e)
+  MIG 1g.5gb      Device  2: (UUID: MIG-90075af8-1349-5b67-83b7-e31b0590b922)
+  MIG 1g.5gb      Device  3: (UUID: MIG-f501d9fb-880e-50dc-8f70-f31dff6e44c9)
+
+
+$ kubectl get node "$GPU_NODE" \
   -o go-template='{{range $key, $value := .status.allocatable}}{{printf "%s: %v\n" $key $value}}{{end}}' \
   | grep nvidia.com
+
+nvidia.com/gpu: 0
+nvidia.com/mig-1g.5gb: 2
+nvidia.com/mig-2g.10gb: 1
+nvidia.com/mig-3g.20gb: 1
 ```
 
 Expected nonzero counts are 2, 1 and 1 for the profiles above. nvidia.com/gpu may remain
@@ -76,9 +93,11 @@ profile-specific test. Inspect pods/logs if the expected counts never appear.
 
 ```bash
 kubectl apply -f manifests/mixed-vectoradd.yaml
+
 kubectl wait -n default pod/mig-mixed-vectoradd \
   --for=jsonpath='{.status.phase}'=Succeeded \
   --timeout=5m
+
 kubectl logs -n default mig-mixed-vectoradd
 ```
 
