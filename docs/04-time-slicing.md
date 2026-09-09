@@ -101,11 +101,6 @@ kubectl rollout restart -n gpu-operator daemonset/gpu-feature-discovery
 The Operator does not automatically watch the ConfigMap contents for this change.
 Make edits with user GPU workloads stopped and verify counts again.
 
-## Observability limitation
-
-NVIDIA documents that DCGM Exporter cannot associate GPU metrics to individual containers
-when device-plugin time-slicing is enabled. Do not interpret a shared instance's aggregate
-utilization as accurate per-pod attribution.
 
 For long-lived GPU processes, continue to [the persistent worker](05-persistent-worker.md).
 For rollback, see [cleanup](08-cleanup.md).
