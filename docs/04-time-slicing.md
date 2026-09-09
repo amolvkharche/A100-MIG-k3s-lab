@@ -28,7 +28,7 @@ dedicated (no sharing) and share-3g (four replicas). The default stays dedicated
 the node label selects share-3g.
 
 ```bash
-kubectl apply -f manifests/time-slicing-config.yaml
+$ kubectl apply -f manifests/time-slicing-config.yaml
 
 helm upgrade gpu-operator nvidia/gpu-operator \
   --namespace gpu-operator \
@@ -39,7 +39,17 @@ helm upgrade gpu-operator nvidia/gpu-operator \
   --wait \
   --timeout 10m
 
-kubectl label node "$GPU_NODE" nvidia.com/device-plugin.config=share-3g --overwrite
+$ kubectl label node "$GPU_NODE" nvidia.com/device-plugin.config=share-3g --overwrite
+node/instance-20260908-112739 labeled
+
+$ kubectl get node instance-20260908-112739 \
+  -o go-template='{{range $key, $value := .status.allocatable}}{{printf "%s: %v\n" $key $value}}{{end}}' \
+  | grep nvidia.com
+nvidia.com/gpu: 0
+nvidia.com/mig-1g.5gb: 2
+nvidia.com/mig-2g.10gb: 1
+nvidia.com/mig-3g.20gb: 0
+nvidia.com/mig-3g.20gb.shared: 4
 ```
 
 The shared resource list contains only nvidia.com/mig-3g.20gb. renameByDefault=true adds
