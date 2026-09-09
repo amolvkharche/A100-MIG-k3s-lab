@@ -20,9 +20,11 @@ kubectl get pods -A | grep -Ei 'nvidia|gpu-operator' || true
 
 apt-get update
 apt-get install -y pciutils linux-headers-$(uname -r)
-lspci -nn | grep -i nvidia
+
+$ lspci -nn | grep -i nvidia
+00:04.0 3D controller [0302]: NVIDIA Corporation GA100 [A100 SXM4 40GB] [10de:20b0] (rev a1)
+
 ls -l /var/run/nri/nri.sock
-k3s ctr plugins ls | grep -E 'nri|cri'
 ```
 
 Use a boot disk with headroom for image pulls, unpacked images, drivers and logs.
@@ -56,8 +58,31 @@ helm install gpu-operator nvidia/gpu-operator \
 
 kubectl get pods -n gpu-operator
 kubectl get clusterpolicy
-kubectl exec -n gpu-operator ds/nvidia-driver-daemonset \
+
+$ kubectl exec -n gpu-operator ds/nvidia-driver-daemonset \
   -c nvidia-driver-ctr -- nvidia-smi
+
+Tue Sep  8 11:50:21 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.91.07              Driver Version: 595.91.07      CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-40GB          On  |   00000000:00:04.0 Off |                    0 |
+| N/A   34C    P0             46W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+
 ```
 
 The driver is managed in a container, so host-shell nvidia-smi may still be unavailable.
