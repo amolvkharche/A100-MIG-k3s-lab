@@ -1,6 +1,6 @@
 # 1. Install NVIDIA GPU Operator
 
-This begins from an existing k3s cluster on a GCP VM with an A100 attached.
+This begins from an existing k3s cluster on A100 node.
 The lab did not capture the k3s provisioning command, so provisioning is outside this repo.
 
 ## Preflight
