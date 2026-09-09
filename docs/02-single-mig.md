@@ -11,9 +11,14 @@ kubectl get pods -A
 kubectl get node "$GPU_NODE" -L nvidia.com/mig.capable
 
 kubectl label node "$GPU_NODE" nvidia.com/mig.config=all-1g.5gb --overwrite
-kubectl get node "$GPU_NODE" \
+
+$ kubectl get node "$GPU_NODE" \
   -L nvidia.com/mig.strategy,nvidia.com/mig.config,nvidia.com/mig.config.state \
   --watch
+NAME                       STATUS   ROLES           AGE     VERSION        MIG.CONFIG   MIG.CONFIG.STATE
+instance-20260908-112739   Ready    control-plane   9m41s   v1.36.4+k3s1   all-1g.5gb   pending
+instance-20260908-112739   Ready    control-plane   9m41s   v1.36.4+k3s1   all-1g.5gb   rebooting
+instance-20260908-112739   Ready    control-plane   9m42s   v1.36.4+k3s1   all-1g.5gb   rebooting
 ```
 
 Wait for success, then stop the watch with Ctrl+C. In the recorded run the state stayed
@@ -27,13 +32,25 @@ while components initialize.
 ## Verify physical partitions and resource registration
 
 ```bash
-kubectl exec -n gpu-operator ds/nvidia-driver-daemonset \
+$ kubectl exec -n gpu-operator ds/nvidia-driver-daemonset \
   -c nvidia-driver-ctr -- nvidia-smi
-kubectl exec -n gpu-operator ds/nvidia-driver-daemonset \
+
+$ kubectl exec -n gpu-operator ds/nvidia-driver-daemonset \
   -c nvidia-driver-ctr -- nvidia-smi -L
 
-kubectl get node "$GPU_NODE" \
+GPU 0: NVIDIA A100-SXM4-40GB (UUID: GPU-838f60d9-651f-9166-ea42-f9da674a6947)
+  MIG 1g.5gb      Device  0: (UUID: MIG-ffda444c-c706-57c6-98c9-67c441a0b109)
+  MIG 1g.5gb      Device  1: (UUID: MIG-fe9bc608-60f5-5479-8cc4-1827021d27a9)
+  MIG 1g.5gb      Device  2: (UUID: MIG-90075af8-1349-5b67-83b7-e31b0590b922)
+  MIG 1g.5gb      Device  3: (UUID: MIG-f501d9fb-880e-50dc-8f70-f31dff6e44c9)
+  MIG 1g.5gb      Device  4: (UUID: MIG-7914baf1-7eeb-5b67-adfa-f8fc35a5a0cc)
+  MIG 1g.5gb      Device  5: (UUID: MIG-495535b8-7e4b-54b5-b110-eb69e35255c4)
+  MIG 1g.5gb      Device  6: (UUID: MIG-a8e039b8-35d4-590b-80ab-bc9d329d2067)
+
+$ kubectl get node "$GPU_NODE" \
   -o jsonpath='{.status.allocatable.nvidia\.com/gpu}{"\n"}'
+
+7
 ```
 
 Expected: seven MIG devices and nvidia.com/gpu: 7.
