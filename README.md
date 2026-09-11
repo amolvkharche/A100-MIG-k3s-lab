@@ -53,7 +53,6 @@ Set these in each new shell:
 
 ```bash
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-export GPU_NODE="YOUR_KUBERNETES_NODE_NAME"
 kubectl get nodes -o wide
 ```
 
